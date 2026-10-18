@@ -3,25 +3,67 @@
     NC_045512.2 FASTA sequence of SARS-CoV-2:
       class: File
       location: 'https://zenodo.org/record/4555735/files/NC_045512.2_reference.fasta?download=1'
+      hashes:
+      - hash_function: SHA-1
+        hash_value: db3759c2e1d9ce8827ba4aa1749e759313591240
     Paired Collection:
       class: Collection
       collection_type: 'list:paired'
       elements:
-        - class: Collection
-          type: paired
-          identifier: SRR11578257
-          elements:
-          - identifier: forward
-            class: File
-            location: "https://zenodo.org/records/10174466/files/SRR11578257_R1.fastq.gz?download=1"
-          - identifier: reverse
-            class: File
-            location: "https://zenodo.org/records/10174466/files/SRR11578257_R2.fastq.gz?download=1"
+      - class: Collection
+        type: paired
+        identifier: SRR11578257
+        elements:
+        - identifier: forward
+          class: File
+          location: "https://zenodo.org/records/10174466/files/SRR11578257_R1.fastq.gz?download=1"
+          hashes:
+          - hash_function: SHA-1
+            hash_value: db2f908fbbb6c4920ee0de73265acdeb92c9895f
+        - identifier: reverse
+          class: File
+          location: "https://zenodo.org/records/10174466/files/SRR11578257_R2.fastq.gz?download=1"
+          hashes:
+          - hash_function: SHA-1
+            hash_value: 4f754a7023bcc3cb1a240d3fb03532338c5c1107
   outputs:
     annotated_variants:
       attributes: {}
       element_tests:
         SRR11578257:
-          path: test-data/final_snpeff_annotated_variants.vcf
-          compare: diff
-          lines_diff: 6
+          asserts:
+            - has_text:
+                text: '##SnpEffVersion="4.5covid19'
+            - has_line:
+                line: "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO"
+            # 55 variant records (39 PASS, 16 sb_fdr) with the reference tool versions
+            - has_line_matching:
+                expression: 'NC_045512\.2\t.*'
+                n: 55
+                delta: 3
+            - has_line_matching:
+                expression: 'NC_045512\.2\t([^\t]+\t){5}PASS\t.*'
+                n: 39
+                delta: 3
+            - has_line_matching:
+                expression: 'NC_045512\.2\t([^\t]+\t){5}sb_fdr\t.*'
+                n: 16
+                delta: 3
+            - has_line_matching:
+                expression: 'NC_045512\.2\t174\t\.\tG\tC\t[0-9.]+\tPASS\tDP=[0-9]+;AF=0\.8[0-9]*;.*'
+            - has_line_matching:
+                expression: 'NC_045512\.2\t3037\t\.\tC\tT\t[0-9.]+\tPASS\t.*EFF=SYNONYMOUS_CODING\(LOW\|SILENT\|ttC/ttT\|F924\|.*'
+            - has_line_matching:
+                expression: 'NC_045512\.2\t11109\t\.\tC\tT\t[0-9.]+\tPASS\t.*EFF=NON_SYNONYMOUS_CODING\(MODERATE\|MISSENSE\|gCt/gTt\|A3615V\|.*'
+            - has_line_matching:
+                expression: 'NC_045512\.2\t14408\t\.\tC\tT\t[0-9.]+\tPASS\t.*EFF=NON_SYNONYMOUS_CODING\(MODERATE\|MISSENSE\|cCt/cTt\|P4715L\|.*'
+            - has_line_matching:
+                expression: 'NC_045512\.2\t18788\t\.\tC\tT\t[0-9.]+\tPASS\t.*EFF=NON_SYNONYMOUS_CODING\(MODERATE\|MISSENSE\|aCa/aTa\|T6175I\|.*'
+            - has_line_matching:
+                expression: 'NC_045512\.2\t20209\t\.\tAGTAGAAATT\tA\t[0-9.]+\tPASS\t.*INDEL;.*EFF=CODON_CHANGE_PLUS_CODON_DELETION\(MODERATE\|\|agtagaaattta/ata\|SRNL6649I\|.*'
+            - has_line_matching:
+                expression: 'NC_045512\.2\t22712\t\.\tC\tT\t[0-9.]+\tsb_fdr\t.*EFF=NON_SYNONYMOUS_CODING\(MODERATE\|MISSENSE\|Cct/Tct\|P384S\|1273\|S\|.*'
+            - has_line_matching:
+                expression: 'NC_045512\.2\t25563\t\.\tG\tT\t[0-9.]+\tPASS\t.*EFF=NON_SYNONYMOUS_CODING\(MODERATE\|MISSENSE\|caG/caT\|Q57H\|275\|ORF3a\|.*'
+            - has_line_matching:
+                expression: 'NC_045512\.2\t28214\t\.\tC\tCT\t[0-9.]+\tPASS\t.*INDEL;.*EFF=FRAME_SHIFT\(HIGH\|\|tta/ttTa\|L109F\?\|121\|ORF8\|.*'
